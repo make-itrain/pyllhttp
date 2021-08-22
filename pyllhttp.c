@@ -272,6 +272,15 @@ parser_minor(PyObject *self, void *closure) {
 }
 
 static PyObject *
+parser_status_code(PyObject *self, void *closure) {
+	llhttp_t *llhttp = &((parser_object*)self)->llhttp;
+	if (!llhttp->http_major && !llhttp->http_minor)
+        Py_RETURN_NONE;
+	
+	return PyLong_FromSize_t(llhttp->status_code);
+}
+
+static PyObject *
 parser_content_length(PyObject *self, void *closure) {
     llhttp_t *llhttp = &((parser_object*)self)->llhttp;
     if (!(llhttp->flags & F_CONTENT_LENGTH))
@@ -386,6 +395,7 @@ static PyGetSetDef parser_getset[] = {
     { "is_upgrading", parser_is_upgrading },
     { "is_busted", parser_is_busted },
     { "error", parser_error },
+	{ "status_code", parser_status_code },
     { NULL }
 };
 
